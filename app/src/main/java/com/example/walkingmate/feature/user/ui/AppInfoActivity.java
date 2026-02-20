@@ -90,9 +90,11 @@ public class AppInfoActivity extends AppCompatActivity {
         String userId = prefs.getString("UserId", null);
 
         deleteLocalUserData(userId);
+        deleteAllLocalUserData();
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
+        editor.putBoolean("ForceLoggedOut", true);
         editor.apply();
 
         Intent intent = new Intent(AppInfoActivity.this, StartActivity.class);
@@ -142,8 +144,10 @@ public class AppInfoActivity extends AppCompatActivity {
                     firestore.collection("challenge").document(userId).delete()
                             .addOnSuccessListener(aVoid1 -> {
                                 deleteLocalUserData(userId);
+                                deleteAllLocalUserData();
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.clear();
+                                editor.putBoolean("ForceLoggedOut", true);
                                 editor.apply();
 
                                 Intent intent = new Intent(AppInfoActivity.this, StartActivity.class);
@@ -177,6 +181,29 @@ public class AppInfoActivity extends AppCompatActivity {
                 Log.d("Local Data", "파일 삭제 성공: " + filename);
             } else {
                 Log.d("Local Data", "파일 삭제 실패: " + filename);
+            }
+        }
+    }
+
+    private void deleteAllLocalUserData() {
+        File folder = new File(getFilesDir(), "userData");
+        if (!folder.exists() || !folder.isDirectory()) {
+            return;
+        }
+
+        File[] files = folder.listFiles();
+        if (files == null) {
+            return;
+        }
+
+        for (File file : files) {
+            if (file == null) {
+                continue;
+            }
+            if (file.isFile()) {
+                if (!file.delete()) {
+                    Log.d("Local Data", "파일 삭제 실패: " + file.getName());
+                }
             }
         }
     }

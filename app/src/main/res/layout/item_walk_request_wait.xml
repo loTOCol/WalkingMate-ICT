@@ -1,79 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:paddingVertical="5dp"
-    android:layout_height="60dp">
-
+    android:layout_height="72dp"
+    android:background="@drawable/bg_walk_request_item"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="10dp">
 
     <LinearLayout
         android:id="@+id/body_walkwait"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="6"
-        android:gravity="center|start"
-        android:orientation="vertical"
-        android:paddingStart="8dp">
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/user_walkwait"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="사용자 이름 (성별/연령)"
+            android:textColor="@color/music_text_main"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/status_walkwait"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Title"
-            android:textColor="@color/black"
-            android:textSize="20dp"
-            android:textStyle="bold">
-
-        </TextView>
-
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_map_goal_badge"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:text="수락됨"
+            android:textColor="@color/music_text_sub"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/action_wrap_walkwait"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:layout_weight="1"
-        android:layout_height="match_parent">
-
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/chat_walkwait"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_chat_walkwait"
-            android:padding="5dp"
-            android:background="@drawable/orangebtn"/>
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:gravity="center"
-        android:layout_weight="1"
-        android:layout_height="match_parent">
-
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/bg_walk_action_icon"
+            android:padding="8dp"
+            android:src="@drawable/icon_chat_walkwait" />
 
         <ImageButton
             android:id="@+id/accept_walkwait"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@drawable/icon_check_walkwait"
-            android:background="@drawable/orangebtn"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:gravity="center"
-        android:layout_weight="1"
-        android:layout_height="match_parent">
-
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/bg_walk_action_icon"
+            android:padding="8dp"
+            android:src="@drawable/icon_check_walkwait" />
 
         <ImageButton
             android:id="@+id/reject_walkwait"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_reject_walkwait"
-            android:padding="5dp"
-            android:background="@drawable/orangebtn"/>
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/bg_walk_action_icon"
+            android:padding="8dp"
+            android:src="@drawable/icon_reject_walkwait" />
     </LinearLayout>
 </LinearLayout>

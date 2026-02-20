@@ -132,7 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="0.000"
+                    android:text="0.000 km"
                     android:textColor="@color/music_text_main"
                     android:textSize="22sp"
                     android:textStyle="bold" />

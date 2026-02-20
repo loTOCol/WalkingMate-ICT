@@ -77,6 +77,7 @@ public class SignupActivity extends AppCompatActivity {
         String username = usernameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
+        String defaultAppName = buildDefaultAppName(username);
 
         if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             Toast.makeText(SignupActivity.this, "모든 필드를 입력해 주세요.", Toast.LENGTH_SHORT).show();
@@ -136,7 +137,7 @@ public class SignupActivity extends AppCompatActivity {
                                 user.put("birthyear", "");
                                 user.put("profileImagebig", "");
                                 user.put("profileImagesmall", "");
-                                user.put("appname", "");
+                                user.put("appname", defaultAppName);
                                 user.put("title", "");
                                 user.put("reliability", 0.0);
 
@@ -162,7 +163,7 @@ public class SignupActivity extends AppCompatActivity {
                                                                                 username,
                                                                                 "", // profileImagebig
                                                                                 "", // profileImagesmall
-                                                                                "", // appname
+                                                                                defaultAppName, // appname
                                                                                 "", // nickname
                                                                                 "", // name
                                                                                 ageRange, // 나이 연령대
@@ -201,5 +202,16 @@ public class SignupActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private String buildDefaultAppName(String username) {
+        if (username == null) {
+            return "워킹메이트";
+        }
+        String trimmed = username.trim();
+        if (trimmed.isEmpty()) {
+            return "워킹메이트";
+        }
+        return trimmed;
     }
 }

@@ -31,7 +31,7 @@ public class EndTrackingActivity extends Activity {
         feedData=feedData.loadfeed(filename,this);
 
         TextView trackinfo=findViewById(R.id.trackinfo);
-        String info=String.format("시작 시간: %s\n종료 시간: %s\n걸음 수: %d보\n이동 거리: %.3fkm",
+        String info=String.format("시작 시간: %s\n종료 시간: %s\n걸음 수: %d보\n이동 거리: %.3f km",
                 feedData.timecheck[0].replace("_"," "),feedData.timecheck[1].replace("_"," ")
                 ,feedData.step,feedData.displacement);
         trackinfo.setText(info);

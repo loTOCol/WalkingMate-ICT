@@ -18,6 +18,7 @@ public class IntroSplashActivity extends AppCompatActivity {
     private static final long SPLASH_DURATION_MS = 900L;
     private static final String PREFS_NAME = "LoginPrefs";
     private static final String PREF_USERID = "UserId";
+    private static final String PREF_FORCE_LOGOUT = "ForceLoggedOut";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,12 @@ public class IntroSplashActivity extends AppCompatActivity {
 
     private void routeNext() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        if (sharedPreferences.getBoolean(PREF_FORCE_LOGOUT, false)) {
+            startActivity(new Intent(this, StartActivity.class));
+            finish();
+            return;
+        }
+
         String userId = sharedPreferences.getString(PREF_USERID, null);
 
         if (TextUtils.isEmpty(userId)) {

@@ -1,5 +1,6 @@
 package com.example.walkingmate.feature.map.ui;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
@@ -18,7 +19,6 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -172,6 +172,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         disTxt = findViewById(R.id.displacement_walk);
         walkTxt = findViewById(R.id.walk_tracking);
         runtimeTxt = findViewById(R.id.time_tracking);
+        updateDistanceText();
 
         TextView goalStepsText = findViewById(R.id.goal_steps_text);
         goalStepsText.setVisibility(View.GONE);
@@ -274,104 +275,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         timecheck[0] = getTime();
         Toast.makeText(MapActivity.this, "경로추적 시작!", Toast.LENGTH_SHORT).show();
 
-        endBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // "산책 경로를 저장하시겠습니까?" 메시지와 함께 다이얼로그를 띄웁니다.
-                new AlertDialog.Builder(MapActivity.this)
-                        .setTitle("경로 저장")
-                        .setMessage("산책 경로를 저장하시겠습니까?")
-                        .setPositiveButton("예", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // 사용자가 "예"를 선택한 경우
-                                String sendfilename = "";
-
-                                // 시작한 상태일 때만 작동
-                                if (coordList.size() < 2) {
-                                    return;
-                                } else if (IsTracking[0]) {
-                                    // 산책 경로 저장
-                                    saveWalkedRoute(coordList);
-                                    timecheck[1] = getTime();
-
-                                    // 좌표가 너무 많으면 줄이기
-                                    while (coordList.size() > 5000) {
-                                        ArrayList<LatLng> tmp = new ArrayList<>();
-                                        Log.d("메이트루트", coordList.size() + "");
-                                        for (int i = 0; i < coordList.size(); ++i) {
-                                            if (i % 4 != 0) {
-                                                tmp.add(coordList.get(i));
-                                            }
-                                        }
-                                        coordList = tmp;
-                                    }
-                                }
-
-                                // 피드 데이터 내부 저장소에 저장
-                                FeedData feedData = new FeedData(coordList, markerList, timecheck, step, displacement);
-                                sendfilename = feedData.savefeed(feedData, MapActivity.this);
-
-                                IsTracking[0] = false;
-
-                                stopStepCounterService();
-                                stopTimeCheckingService();
-                                stopMusicService();
-                                // 걸음 수 업데이트
-                                challenge.document(UserData.loadData(MapActivity.this).userid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        Long updatestep = task.getResult().getLong("step") + (long) step;
-                                        challenge.document(UserData.loadData(MapActivity.this).userid).update("step", updatestep);
-                                    }
-                                });
-
-                                // EndTrackingActivity로 화면 전환
-                                Intent gofeed = new Intent(MapActivity.this, EndTrackingActivity.class);
-                                gofeed.putExtra("filename", sendfilename);
-                                startActivity(gofeed);
-                                finish();
-                            }
-                        })
-                        .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // 사용자가 "아니오"를 선택한 경우
-                                String sendfilename = "";
-
-                                // 시작한 상태일 때만 작동
-                                if (coordList.size() < 2) {
-                                    return;
-                                } else if (IsTracking[0]) {
-                                    // 피드 데이터 내부 저장소에 저장
-                                    FeedData feedData = new FeedData(coordList, markerList, timecheck, step, displacement);
-                                    sendfilename = feedData.savefeed(feedData, MapActivity.this);
-
-                                    IsTracking[0] = false;
-
-                                    stopStepCounterService();
-                                    stopTimeCheckingService();
-                                    stopMusicService();
-                                    // 걸음 수 업데이트
-                                    challenge.document(UserData.loadData(MapActivity.this).userid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            Long updatestep = task.getResult().getLong("step") + (long) step;
-                                            challenge.document(UserData.loadData(MapActivity.this).userid).update("step", updatestep);
-                                        }
-                                    });
-
-                                    // EndTrackingActivity로 화면 전환
-                                    Intent gofeed = new Intent(MapActivity.this, EndTrackingActivity.class);
-                                    gofeed.putExtra("filename", sendfilename);
-                                    startActivity(gofeed);
-                                    finish();
-                                }
-                            }
-                        })
-                        .show();
-            }
-        });
+        endBtn.setOnClickListener(view -> showEndTrackingConfirmDialog());
 
 
 
@@ -626,7 +530,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     if(coordList.size()>1){
                         displacement+=tmpcoord[0].distanceTo(tmpcoord[1])/1000;
                     }
-                    disTxt.setText(""+Math.round((displacement*1000))/1000.0);
+                    updateDistanceText();
 
                     //경로 실시간 업데이트
                     if(coordList.size()>1){
@@ -719,6 +623,95 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             coords.add(latLng);
         }
         return coords;
+    }
+
+    private void updateDistanceText() {
+        disTxt.setText(String.format(Locale.getDefault(), "%.3f km", displacement));
+    }
+
+    private void showEndTrackingConfirmDialog() {
+        LayoutInflater inflater = LayoutInflater.from(MapActivity.this);
+        View dialogView = inflater.inflate(R.layout.dialog_end_tracking_confirm, null);
+        TextView summaryText = dialogView.findViewById(R.id.tv_end_summary);
+        Button saveButton = dialogView.findViewById(R.id.btn_end_save);
+        Button discardButton = dialogView.findViewById(R.id.btn_end_discard);
+        Button continueButton = dialogView.findViewById(R.id.btn_end_continue);
+
+        summaryText.setText(String.format(
+                Locale.getDefault(),
+                "걸음 %d보 · 거리 %.3f km",
+                step,
+                displacement
+        ));
+
+        AlertDialog dialog = new AlertDialog.Builder(MapActivity.this)
+                .setView(dialogView)
+                .create();
+
+        saveButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            completeTracking(true);
+        });
+        discardButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            completeTracking(false);
+        });
+        continueButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+    }
+
+    private void completeTracking(boolean saveRouteOnMap) {
+        if (coordList.size() < 2 || !IsTracking[0]) {
+            Toast.makeText(this, "기록할 경로가 아직 부족합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        timecheck[1] = getTime();
+
+        if (saveRouteOnMap) {
+            saveWalkedRoute(coordList);
+            while (coordList.size() > 5000) {
+                ArrayList<LatLng> tmp = new ArrayList<>();
+                Log.d("메이트루트", coordList.size() + "");
+                for (int i = 0; i < coordList.size(); ++i) {
+                    if (i % 4 != 0) {
+                        tmp.add(coordList.get(i));
+                    }
+                }
+                coordList = tmp;
+            }
+        }
+
+        FeedData feedData = new FeedData(coordList, markerList, timecheck, step, displacement);
+        String sendfilename = feedData.savefeed(feedData, MapActivity.this);
+
+        IsTracking[0] = false;
+
+        stopStepCounterService();
+        stopTimeCheckingService();
+        stopMusicService();
+
+        UserData userData = UserData.loadData(MapActivity.this);
+        if (userData != null && !TextUtils.isEmpty(userData.userid)) {
+            challenge.document(userData.userid).get().addOnCompleteListener(task -> {
+                if (!task.isSuccessful() || task.getResult() == null) {
+                    return;
+                }
+                Long prevStep = task.getResult().getLong("step");
+                long updatedStep = (prevStep == null ? 0L : prevStep) + step;
+                challenge.document(userData.userid).update("step", updatedStep);
+            });
+        }
+
+        Intent gofeed = new Intent(MapActivity.this, EndTrackingActivity.class);
+        gofeed.putExtra("filename", sendfilename);
+        startActivity(gofeed);
+        finish();
     }
     private void setGoalSteps(int goalSteps) {
         TextView goalStepsText = findViewById(R.id.goal_steps_text);

@@ -184,6 +184,7 @@ public class StartActivity extends AppCompatActivity {
                                     editor.putString(PREF_USERID, inputUsername);
                                     // [보안 리팩토링] 일반 로그인 타입 저장(자동로그인 분기 안정화)
                                     editor.putString("LoginType", "default");
+                                    editor.putBoolean("ForceLoggedOut", false);
                                     editor.apply();
 
                                     String nickname = document.getString("nickname") != null ? document.getString("nickname") : "";
@@ -193,9 +194,14 @@ public class StartActivity extends AppCompatActivity {
                                     String gender = document.getString("gender") != null ? document.getString("gender") : "";
                                     String profileImagebig = document.getString("profileImagebig") != null ? document.getString("profileImagebig") : "";
                                     String profileImagesmall = document.getString("profileImagesmall") != null ? document.getString("profileImagesmall") : "";
-                                    String appname = document.getString("appname") != null ? document.getString("appname") : "";
+                                    String rawAppname = document.getString("appname");
+                                    String appname = resolveAppName(inputUsername, rawAppname, nickname, name);
                                     String title = document.getString("title") != null ? document.getString("title") : "없음";
                                     Double reliability = document.getDouble("reliability") != null ? document.getDouble("reliability") : 0.0;
+
+                                    if (TextUtils.isEmpty(safeTrim(rawAppname))) {
+                                        db.collection("users").document(inputUsername).update("appname", appname);
+                                    }
 
                                     // UserData 객체 생성
                                     UserData userData = new UserData(
@@ -396,11 +402,11 @@ public class StartActivity extends AppCompatActivity {
             if (jsonObject.getString("resultcode").equals("00")) {
                 JSONObject object = new JSONObject(jsonObject.getString("response"));
                 String id = object.getString("id");
-                String nickname = object.getString("nickname");
-                String name = "name";
-                String age = object.getString("age");
-                String gender = object.getString("gender");
-                String birthyear = object.getString("birthyear");
+                String nickname = object.optString("nickname", "");
+                String name = object.optString("name", "");
+                String age = object.optString("age", "");
+                String gender = object.optString("gender", "");
+                String birthyear = object.optString("birthyear", "");
                 model = new NaverUserModel(id, nickname, name, age, gender, birthyear);
             }
         } catch (JSONException e) {
@@ -420,16 +426,22 @@ public class StartActivity extends AppCompatActivity {
                     editor.putString(PREF_USERID, model.getId());
                     // [보안 리팩토링] 네이버 로그인 타입 저장
                     editor.putString("LoginType", "naver");
+                    editor.putBoolean("ForceLoggedOut", false);
                     editor.apply();
 
                     permlist.setVisibility(View.VISIBLE);
                     permlist.setText("접속중...");
+                    String savedAppname = task.getResult().getString("appname");
+                    String effectiveAppname = resolveAppName(task.getResult().getId(), savedAppname, model.getNickname(), model.getName());
                     UserData userDatatmp = new UserData(task.getResult().getId(), (String) task.getResult().get("profileImagebig"),
                             (String) task.getResult().get("profileImagesmall"),
-                            (String) task.getResult().get("appname"), model.getNickname(), model.getName(), model.getAge(),
+                            effectiveAppname, model.getNickname(), model.getName(), model.getAge(),
                             model.getGender(), model.getBirthyear(), (String) task.getResult().get("title"),
                             task.getResult().getDouble("reliability"));
                     UserData.saveData(userDatatmp, StartActivity.this);
+                    if (TextUtils.isEmpty(safeTrim(savedAppname))) {
+                        db.collection("users").document(model.getId()).update("appname", effectiveAppname);
+                    }
 
                     ioExecutor.execute(() -> {
                         UserData.saveBitmapToJpeg(UserData.GetBitmapfromURL((String) task.getResult().get("profileImagebig")),
@@ -469,6 +481,7 @@ public class StartActivity extends AppCompatActivity {
                     editor.putString(PREF_USERID, model.getId());
                     // [보안 리팩토링] 네이버 로그인 타입 저장
                     editor.putString("LoginType", "naver");
+                    editor.putBoolean("ForceLoggedOut", false);
                     editor.apply();
 
                     startActivity(setprofile);
@@ -514,6 +527,7 @@ public class StartActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.remove(PREF_USERID);
                     editor.remove("LoginType");
+                    editor.putBoolean("ForceLoggedOut", true);
                     editor.apply();
                 }
             }
@@ -540,5 +554,33 @@ public class StartActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ioExecutor.shutdownNow();
+    }
+
+    private String resolveAppName(String userId, String appname, String nickname, String name) {
+        String normalizedAppName = safeTrim(appname);
+        if (!TextUtils.isEmpty(normalizedAppName)) {
+            return normalizedAppName;
+        }
+
+        String normalizedNickname = safeTrim(nickname);
+        if (!TextUtils.isEmpty(normalizedNickname)) {
+            return normalizedNickname;
+        }
+
+        String normalizedName = safeTrim(name);
+        if (!TextUtils.isEmpty(normalizedName)) {
+            return normalizedName;
+        }
+
+        String normalizedUserId = safeTrim(userId);
+        if (!TextUtils.isEmpty(normalizedUserId)) {
+            return normalizedUserId;
+        }
+
+        return "워킹메이트";
+    }
+
+    private String safeTrim(String value) {
+        return value == null ? "" : value.trim();
     }
 }

@@ -210,6 +210,13 @@ public class UserData {
             e.printStackTrace();
         }
         resultData = UserData.decode(result);
+        if (resultData != null) {
+            String resolvedAppName = resolveAppName(resultData);
+            if (!resolvedAppName.equals(resultData.appname)) {
+                resultData.appname = resolvedAppName;
+                saveData(resultData, activity);
+            }
+        }
 
         return resultData;
     }
@@ -246,6 +253,38 @@ public class UserData {
         } else {
             return new UserData(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8], result[9], Double.parseDouble(result[10]));
         }
+    }
+
+    private static String resolveAppName(UserData userData) {
+        if (userData == null) {
+            return "워킹메이트";
+        }
+
+        String appname = safeTrim(userData.appname);
+        if (!appname.isEmpty()) {
+            return appname;
+        }
+
+        String nickname = safeTrim(userData.nickname);
+        if (!nickname.isEmpty()) {
+            return nickname;
+        }
+
+        String name = safeTrim(userData.name);
+        if (!name.isEmpty()) {
+            return name;
+        }
+
+        String userid = safeTrim(userData.userid);
+        if (!userid.isEmpty()) {
+            return userid;
+        }
+
+        return "워킹메이트";
+    }
+
+    private static String safeTrim(String value) {
+        return value == null ? "" : value.trim();
     }
 
     //thread생성해서 사용하기

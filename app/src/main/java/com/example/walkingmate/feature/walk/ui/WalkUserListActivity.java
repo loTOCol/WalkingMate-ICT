@@ -94,6 +94,9 @@ public class WalkUserListActivity extends Activity {
         setContentView(R.layout.activity_walk_user_list);
 
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        int dialogWidth = (int) (getResources().getDisplayMetrics().widthPixels * 0.88f);
+        int dialogHeight = (int) (getResources().getDisplayMetrics().heightPixels * 0.78f);
+        getWindow().setLayout(dialogWidth, dialogHeight);
 
         userData=UserData.loadData(this);
         walkname=null;
@@ -427,9 +430,11 @@ public class WalkUserListActivity extends Activity {
                 return emptyview;
             }
             TextView textView=view.findViewById(R.id.user_walkwait);
+            TextView statusText=view.findViewById(R.id.status_walkwait);
             ImageButton accept=view.findViewById(R.id.accept_walkwait);
             ImageButton reject=view.findViewById(R.id.reject_walkwait);
             ImageButton chat=view.findViewById(R.id.chat_walkwait);
+            LinearLayout actionWrap=view.findViewById(R.id.action_wrap_walkwait);
 
             LinearLayout body=view.findViewById(R.id.body_walkwait);
             body.setOnClickListener(new View.OnClickListener() {
@@ -447,6 +452,8 @@ public class WalkUserListActivity extends Activity {
             else{
                 Log.d("에러","error");
             }
+            statusText.setVisibility(View.GONE);
+            actionWrap.setVisibility(View.VISIBLE);
 
 
             accept.setOnClickListener(new View.OnClickListener() {
@@ -768,9 +775,11 @@ public class WalkUserListActivity extends Activity {
                 return emptyview;
             }
             TextView textView=view.findViewById(R.id.user_walkwait);
+            TextView statusText=view.findViewById(R.id.status_walkwait);
             ImageButton accept=view.findViewById(R.id.accept_walkwait);
             ImageButton reject=view.findViewById(R.id.reject_walkwait);
             ImageButton chat=view.findViewById(R.id.chat_walkwait);
+            LinearLayout actionWrap=view.findViewById(R.id.action_wrap_walkwait);
 
             LinearLayout body=view.findViewById(R.id.body_walkwait);
             body.setOnClickListener(new View.OnClickListener() {
@@ -784,11 +793,12 @@ public class WalkUserListActivity extends Activity {
 
             textView.setText(acceptuserprofile.get(position));
 
-            accept.setVisibility(View.INVISIBLE);
-
-            reject.setVisibility(View.INVISIBLE);
-
-            chat.setVisibility(View.INVISIBLE);
+            accept.setVisibility(View.GONE);
+            reject.setVisibility(View.GONE);
+            chat.setVisibility(View.GONE);
+            actionWrap.setVisibility(View.GONE);
+            statusText.setVisibility(View.VISIBLE);
+            statusText.setText("수락됨");
 
             return view;
         }
