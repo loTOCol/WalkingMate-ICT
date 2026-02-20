@@ -48,7 +48,6 @@ WalkingMate/
     screens/
     gif/
   gradle/
-  scripts/
   build.gradle
   settings.gradle
   gradlew
@@ -73,7 +72,7 @@ NAVER_SEARCH_API_KEY=YOUR_NAVER_SEARCH_API_KEY
 ```
 
 ## 개선 및 안정화 작업
-- 패키지 구조 정리 (`mate` -> `mate` 명칭 정리 포함)
+- 패키지 구조 및 네이밍 정리
 - 게시판 화면 중첩 이슈 수정
 - 자동 로그인 동작 안정화
 - 비밀번호 저장 방식 개선 (해시 기반 검증 + 기존 계정 마이그레이션)
