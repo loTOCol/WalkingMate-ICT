@@ -1,3 +1,5 @@
+![WalkingMate Banner](./assets/screens/banner_ALTools_AIUpscaler.png)
+
 # WalkingMate
 
 > 나의 일상 속 워킹 메이트  
