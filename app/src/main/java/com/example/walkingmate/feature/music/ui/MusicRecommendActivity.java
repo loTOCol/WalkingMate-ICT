@@ -364,8 +364,11 @@ public class MusicRecommendActivity extends AppCompatActivity {
     }
 
     private void fetchSimilarMusic(String filename) {
-        final int MAX_RETRIES = 5;
-        final int[] retryCount = {0};
+        fetchSimilarMusic(filename, 0);
+    }
+
+    private void fetchSimilarMusic(String filename, int retryCount) {
+        final int maxRetries = 5;
 
         if (similarSongsCall != null && !similarSongsCall.isCanceled()) {
             similarSongsCall.cancel();
@@ -381,9 +384,8 @@ public class MusicRecommendActivity extends AppCompatActivity {
                     List<SimilarSongItem> similarItems = response.body();
 
                     if (similarItems == null || similarItems.size() < 5) {
-                        if (retryCount[0] < MAX_RETRIES) {
-                            retryCount[0]++;
-                            fetchSimilarMusic(filename);
+                        if (retryCount < maxRetries) {
+                            fetchSimilarMusic(filename, retryCount + 1);
                         } else {
                             Toast.makeText(MusicRecommendActivity.this, "최대 재시도 횟수를 초과했습니다", Toast.LENGTH_SHORT).show();
                         }
@@ -401,9 +403,8 @@ public class MusicRecommendActivity extends AppCompatActivity {
                                 .collect(Collectors.toList());
 
                         if (validItems.isEmpty()) {
-                            if (retryCount[0] < MAX_RETRIES) {
-                                retryCount[0]++;
-                                fetchSimilarMusic(filename);
+                            if (retryCount < maxRetries) {
+                                fetchSimilarMusic(filename, retryCount + 1);
                             } else {
                                 Toast.makeText(MusicRecommendActivity.this, "최대 재시도 횟수를 초과했습니다", Toast.LENGTH_SHORT).show();
                             }
@@ -422,9 +423,8 @@ public class MusicRecommendActivity extends AppCompatActivity {
                     return;
                 }
                 Toast.makeText(MusicRecommendActivity.this, "서버 요청 실패: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                if (retryCount[0] < MAX_RETRIES) {
-                    retryCount[0]++;
-                    fetchSimilarMusic(filename);
+                if (retryCount < maxRetries) {
+                    fetchSimilarMusic(filename, retryCount + 1);
                 } else {
                     Toast.makeText(MusicRecommendActivity.this, "최대 재시도 횟수를 초과했습니다", Toast.LENGTH_SHORT).show();
                 }
