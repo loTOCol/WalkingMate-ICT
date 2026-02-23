@@ -8,6 +8,9 @@
 
 WalkingMate는 걷기 기록, 메이트 모집, 피드, 채팅을 한 앱에서 제공하는 Android 서비스입니다.
 
+- 진행 인원: 3명 (공모전 기간 공동 개발)
+- 공모전 종료 후 리팩토링 및 기능 개선은 1인으로 지속 진행 중
+
 ## 주요 기능
 - 산책 기록(거리/시간/경로)
 - 메이트 모집 글 작성 및 신청/수락 관리
@@ -65,12 +68,35 @@ WalkingMate는 걷기 기록, 메이트 모집, 피드, 채팅을 한 앱에서 
 | <img src="./assets/screens/screen18.jpg" width="180" /> | <img src="./assets/screens/screen21.jpg" width="180" /> |
 
 ## 기술 스택
-- Language: Java
-- Platform: Android
-- Build: Gradle
-- Backend/DB: Firebase (Firestore, Realtime Database, Storage)
-- Map: Naver Maps SDK
-- Network: Retrofit, Volley
+### Android
+<p>
+  <img src="https://img.shields.io/badge/Android-34A853?style=flat-square&logo=android&logoColor=white" />
+  <img src="https://img.shields.io/badge/Java-17-007396?style=flat-square&logo=openjdk&logoColor=white" />
+  <img src="https://img.shields.io/badge/Gradle-8.7-02303A?style=flat-square&logo=gradle&logoColor=white" />
+  <img src="https://img.shields.io/badge/AGP-8.5.2-3DDC84?style=flat-square&logo=androidstudio&logoColor=white" />
+  <img src="https://img.shields.io/badge/compileSdk-33-0A66C2?style=flat-square" />
+  <img src="https://img.shields.io/badge/targetSdk-33-0A66C2?style=flat-square" />
+  <img src="https://img.shields.io/badge/minSdk-31-0A66C2?style=flat-square" />
+</p>
+
+### Backend (BaaS) / Database / Storage
+<p>
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black" />
+  <img src="https://img.shields.io/badge/Cloud%20Firestore-FFCA28?style=flat-square&logo=firebase&logoColor=black" />
+  <img src="https://img.shields.io/badge/Realtime%20Database-FFCA28?style=flat-square&logo=firebase&logoColor=black" />
+  <img src="https://img.shields.io/badge/Firebase%20Storage-FFCA28?style=flat-square&logo=firebase&logoColor=black" />
+</p>
+
+### Network
+<p>
+  <img src="https://img.shields.io/badge/Retrofit-2.9.0-3E4348?style=flat-square" />
+  <img src="https://img.shields.io/badge/Volley-1.2.1-3E4348?style=flat-square" />
+</p>
+
+### Map
+<p>
+  <img src="https://img.shields.io/badge/Naver%20Maps%20SDK-3.15.0-03C75A?style=flat-square" />
+</p>
 
 ## 프로젝트 구조
 ```text
