@@ -3,11 +3,7 @@ package com.example.walkingmate.feature.user.data;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.ImageDecoder;
-import android.net.Uri;
 import android.util.Log;
-
-import com.google.firebase.firestore.auth.User;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -18,9 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Locale;
 

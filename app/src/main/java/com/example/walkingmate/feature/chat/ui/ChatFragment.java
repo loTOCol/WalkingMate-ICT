@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.os.SystemClock;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,18 +22,10 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 
-import com.example.walkingmate.feature.user.ui.AppInfoActivity;
-import com.example.walkingmate.feature.user.ui.EditUserProfileActivity;
-import com.example.walkingmate.feature.user.ui.HelpInfoActivity;
-import com.example.walkingmate.feature.user.ui.ManageFriendActivity;
 import com.example.walkingmate.R;
-import com.example.walkingmate.feature.schedule.ui.ScheduleActivity;
 import com.example.walkingmate.feature.user.data.UserData;
-import com.example.walkingmate.feature.misc.ui.ChallengeActivity;
 import com.example.walkingmate.feature.chat.model.ChatRoom;
-import com.example.walkingmate.feature.feed.ui.WalkingHomeActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,23 +33,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-
-import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.HashSet;
 import java.util.Set;
 
 public class ChatFragment extends Fragment {
